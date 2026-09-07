@@ -21,4 +21,4 @@
 **Преподаватель курса**
 **Лактюшин Евгений**
 Devops-инженер
-![Картинка со страницы курса](https://learn.astondevs.ru/pluginfile.php/132034/mod_page/content/1/image.png)
+
