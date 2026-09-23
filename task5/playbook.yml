@@ -1,0 +1,28 @@
+---
+- name: Task 5
+  hosts: virtual
+  become: true
+
+  tasks:
+    - name: Update
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+      register: upgrade_result
+    - name: Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+    - name: Nginx autostart
+      ansible.builtin.systemd:
+        name: nginx
+        state: started
+        enabled: true
+    - name: Replace default nginx page
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: "0644"
+        backup: true

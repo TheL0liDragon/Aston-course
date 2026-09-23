@@ -1,0 +1,8 @@
+[2mWARNING  Project directory /.ansible cannot be used for caching as it is not writable.[0m
+[2mWARNING  Using unique temporary directory /tmp/.ansible-0aaa for caching.[0m
+/usr/lib/python3.14/site-packages/ansible_compat/runtime.py:242: UserWarning: Project directory /.ansible cannot be used for caching as it is not writable.
+  self.cache_dir = get_cache_dir(self.project_dir, isolated=self.isolated)
+/usr/lib/python3.14/site-packages/ansible_compat/runtime.py:242: UserWarning: Using unique temporary directory /tmp/.ansible-0aaa for caching.
+  self.cache_dir = get_cache_dir(self.project_dir, isolated=self.isolated)
+
+[32mPassed[0m: 0 failure(s), 0 warning(s) in 1 files processed of 1 encountered. Last profile that met the validation criteria was 'production'.
