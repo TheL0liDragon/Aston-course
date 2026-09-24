@@ -25,3 +25,17 @@ Backend и frontend **уже собираются в Docker-образы** че�
 ```bash
 cd kanban-backend
 docker build -t kanban-backend:local .
+```
+
+### Frontend
+
+```bash
+cd kanban-frontend
+docker build -t kanban-frontend:local .
+```
+
+### Запуск через docker-compose
+
+```bash
+docker compose up -d
+```
