@@ -1,0 +1,86 @@
+services:
+  kanban-postgres:
+    image: postgres:13-alpine
+    container_name: kanban-postgres
+    environment:
+      POSTGRES_DB: kanban
+      POSTGRES_USER: kanban
+      POSTGRES_PASSWORD: kanban
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kanban -d kanban"]
+      interval: "5s"
+      timeout: "3s"
+      retries: 5
+    networks:
+      - kanban-net 
+      
+  kanban-app:
+    build: https://github.com/TheL0liDragon/kanban-backend.git#develop
+    container_name: kanban-app
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/api/actuator/health || exit 1"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+      start_period: "60s"
+    depends_on:
+      kanban-postgres:
+        condition: service_healthy
+    networks:
+      - kanban-net
+
+  frontend:
+    build: https://github.com/TheL0liDragon/kanban-frontend.git#develop
+    container_name: frontend
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:80/ || exit 1"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+      start_period: "10s"
+    depends_on:
+      - kanban-app
+    networks:
+      - kanban-net
+
+  kanban-nginx:
+    build: ./nginx
+    container_name: kanban-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      kanban-app:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    networks:
+      - kanban-net
+  cadvisor:
+    image: ghcr.io/google/cadvisor:v0.60.5
+    container_name: cadvisor
+    ports:
+      - "8082:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    command:
+      - --docker_only=true
+    networks:
+      - kanban-net
+networks:
+  kanban-net:
+    driver: bridge
