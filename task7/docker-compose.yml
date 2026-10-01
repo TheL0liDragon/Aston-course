@@ -81,6 +81,20 @@ services:
       - --docker_only=true
     networks:
       - kanban-net
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    restart: unless-stopped
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./promtail/promtail-config.yaml:/etc/promtail/config.yaml:ro
+      - promtail-positions:/tmp
+    command: -config.file=/etc/promtail/config.yaml
+    networks:
+      - kanban-net
+volumes:
+  promtail-positions:
 networks:
   kanban-net:
     driver: bridge

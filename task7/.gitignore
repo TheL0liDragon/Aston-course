@@ -1,0 +1,4 @@
+# Certificates - private keys and backups
+*.key.old
+*.crt.old
+app.local+*.pem
